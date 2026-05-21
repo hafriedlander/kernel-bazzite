@@ -182,7 +182,7 @@ Summary: The Linux kernel
 # This is needed to do merge window version magic
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease ba29%{?buildid}%{?dist}
+%define specrelease ba29%{?buildid}%{?dist}.hf_bc250
 # This defines the kabi tarball version
 %define kabiversion 6.17.7
 
@@ -1146,6 +1146,7 @@ Patch1: patch-1-redhat.patch
 Patch2: patch-2-handheld.patch
 Patch3: patch-3-akmods.patch
 Patch4: patch-4-amdgpu-vrr-whitelist.patch
+Patch5: bc250-40cu-amdgpu.patch
 %endif
 
 # empty final patch to facilitate testing of kernel patches
@@ -2078,6 +2079,7 @@ ApplyOptionalPatch patch-1-redhat.patch
 ApplyOptionalPatch patch-2-handheld.patch
 ApplyOptionalPatch patch-3-akmods.patch
 ApplyOptionalPatch patch-4-amdgpu-vrr-whitelist.patch
+ApplyOptionalPatch bc250-40cu-amdgpu.patch
 %endif
 
 ApplyOptionalPatch linux-kernel-test.patch

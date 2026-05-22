@@ -1758,6 +1758,8 @@ The meta-package for the %{1} kernel\
 %define kernel_variant_package(n:mo) \
 %package %{?1:%{1}-}core\
 Summary: %{variant_summary}\
+Provides: %{name}-%{?1:-%{1}-}core = %{specrpmversion}-%{release}\
+Provides: %{name}-%{?1:-%{1}-}core = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}-%{?1:%{1}-}core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Provides: %{name}-%{?1:%{1}-}core-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel)\

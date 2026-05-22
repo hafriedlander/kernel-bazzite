@@ -172,7 +172,7 @@ Summary: The Linux kernel
 #  to build the base kernel using the debug configuration. (Specifying
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
-# define buildid .local
+%define buildid .hf_bc250
 %define specrpmversion 6.17.7
 %define specversion 6.17.7
 %define patchversion 6.17
@@ -182,7 +182,7 @@ Summary: The Linux kernel
 # This is needed to do merge window version magic
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
-%define specrelease ba29%{?buildid}%{?dist}.hf_bc250
+%define specrelease ba29%{?buildid}%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.17.7
 

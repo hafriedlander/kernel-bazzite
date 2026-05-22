@@ -172,7 +172,7 @@ Summary: The Linux kernel
 #  to build the base kernel using the debug configuration. (Specifying
 #  the --with-release option overrides this setting.)
 %define debugbuildsenabled 1
-%define buildid .hf
+%define buildid .hfbc250cu
 %define specrpmversion 6.17.7
 %define specversion 6.17.7
 %define patchversion 6.17
@@ -183,6 +183,7 @@ Summary: The Linux kernel
 %define patchlevel 17
 # This allows pkg_release to have configurable %%{?dist} tag
 %define specrelease ba29%{?buildid}%{?dist}
+%define specrelease_orig ba29%{?dist}
 # This defines the kabi tarball version
 %define kabiversion 6.17.7
 
@@ -375,6 +376,7 @@ Summary: The Linux kernel
 
 %define KVERREL %{specversion}-%{release}.%{_target_cpu}
 %define KVERREL_RE %(echo %KVERREL | sed 's/+/[+]/g')
+%define KVERREL_ORIG %{specversion}-%{specrelease_orig}.%{_target_cpu}
 %define hdrarch %_target_cpu
 %define asmarch %_target_cpu
 
@@ -1168,10 +1170,14 @@ The %{package_name} meta package
 %define kernel_reqprovconf(o) \
 %if %{-o:0}%{!-o:1}\
 Provides: kernel = %{specversion}-%{pkg_release}\
+Provides: kernel = %{specversion}-%{specrelease_orig}\
 Provides: %{name} = %{specversion}-%{pkg_release}\
+Provides: %{name} = %{specversion}-%{specrelease_orig}\
 %endif\
 Provides: %{name}-%{_target_cpu} = %{specrpmversion}-%{pkg_release}%{uname_suffix %{?1}}\
+Provides: %{name}-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
@@ -1209,6 +1215,7 @@ Obsoletes: glibc-kernheaders < 3.0-46
 Provides: glibc-kernheaders = 3.0-46
 %if 0%{?gemini}
 Provides: %{name}-headers = %{specversion}-%{release}
+Provides: %{name}-headers = %{specversion}-%{specrelease_orig}
 Obsoletes: kernel-headers < %{specversion}
 %endif
 %description headers
@@ -1224,6 +1231,7 @@ glibc package.
 Summary: Header files for the Linux kernel for use by cross-glibc
 %if 0%{?gemini}
 Provides: %{name}-cross-headers = %{specversion}-%{release}
+Provides: %{name}-cross-headers = %{specversion}-%{specrelease_orig}
 Obsoletes: kernel-cross-headers < %{specversion}
 %endif
 %description cross-headers
@@ -1469,6 +1477,7 @@ Linux kernel, suitable for the kabi-dw tool.
 Summary: Debug information for package %{name}%{?1:-%{1}}\
 Requires: %{name}-debuginfo-common-%{_target_cpu} = %{specrpmversion}-%{release}\
 Provides: %{name}%{?1:-%{1}}-debuginfo-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-debuginfo-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 %description %{?1:%{1}-}debuginfo\
@@ -1485,9 +1494,13 @@ This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
 %package %{?1:%{1}-}devel\
 Summary: Development package for building kernel modules to match the %{?2:%{2} }kernel\
 Provides: %{name}%{?1:-%{1}}-devel-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-devel-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}-devel-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}-devel-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: kernel-devel-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: kernel-devel-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Provides: %{name}-devel-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}-devel-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 Requires(pre): findutils\
@@ -1537,10 +1550,14 @@ This meta package provides a single reference that other packages can Require to
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
 Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}%{?1:-%{1}}-modules-internal = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?1:-%{1}}-modules-internal-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-internal-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
@@ -1558,10 +1575,14 @@ This package provides kernel modules for the %{?2:%{2} }kernel package for Red H
 %package %{?1:%{1}-}modules-extra\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}%{?1:-%{1}}-modules-extra = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
@@ -1583,8 +1604,11 @@ This package provides less commonly used kernel modules for the %{?2:%{2} }kerne
 Summary: OOT kernel modules that match the %{?2:%{2} }kernel\
 License: BROADCOM and CDDL AND GPL-2.0-only AND MIT\
 Provides: %{name}%{?1:-%{1}}-modules-akmods-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-akmods-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}%{?1:-%{1}}-modules-akmods-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-akmods-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}%{?1:-%{1}}-modules-akmods = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-akmods = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: evdi-kmod = %{evdi_version}\
 Provides: vhba\
@@ -1593,6 +1617,7 @@ Provides: openrazer-kernel-modules-dkms\
 Provides: zfs-kmod = %{zfs_version}\
 %endif\
 Provides: %{name}%{?1:-%{1}}-modules-akmods-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-akmods-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
@@ -1618,10 +1643,14 @@ License: (GPL-2.0-only OR MIT)\
 License: NVIDIA\
 %endif\
 Provides: %{name}%{?2:-%{2}}-%{1}-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?2:-%{2}}-%{1}-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}%{?2:-%{2}}-%{1}-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?2}}\
+Provides: %{name}%{?2:-%{2}}-%{1}-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?2}}\
 Provides: %{name}%{?2:-%{2}}-%{1} = %{specrpmversion}-%{release}%{uname_suffix %{?2}}\
+Provides: %{name}%{?2:-%{2}}-%{1} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?2}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?2:-%{2}}-%{1}-uname-r = %{KVERREL}%{uname_suffix %{?2}}\
+Provides: %{name}%{?2:-%{2}}-%{1}-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?2}}\
 %if "%{1}" == "nvidia-closed-lts" || "%{1}" == "nvidia-lts" \
 Provides: nvidia-kmod = %{?nvidia_epoch:%{nvidia_epoch}:}%{nvidia_version_lts}\
 %else\
@@ -1651,10 +1680,14 @@ This package provides the Nvidia Closed DRM modules for the %{?3:%{3} }kernel pa
 %package %{?1:%{1}-}modules\
 Summary: kernel modules to match the %{?2:%{2}-}core kernel\
 Provides: %{name}%{?1:-%{1}}-modules-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}-modules-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}-modules-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}-modules = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}-modules = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 %if %{-m:1}%{!-m:0}\
@@ -1674,10 +1707,14 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 %package %{?1:%{1}-}modules-core\
 Summary: Core kernel modules to match the %{?2:%{2}-}core kernel\
 Provides: %{name}%{?1:-%{1}}-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-core-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}-modules-core-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}-modules-core-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}-modules-core = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}-modules-core = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 %if %{-m:1}%{!-m:0}\
 Requires: %{name}-modules-core-uname-r = %{KVERREL}%{uname_variant %{?1}}\
@@ -1720,6 +1757,7 @@ The meta-package for the %{1} kernel\
 %package %{?1:%{1}-}core\
 Summary: %{variant_summary}\
 Provides: %{name}-%{?1:%{1}-}core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}-%{?1:%{1}-}core-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel)\
 %if %{-m:1}%{!-m:0}\
 Requires: %{name}-core-uname-r = %{KVERREL}%{uname_variant %{?1}}\
@@ -1751,6 +1789,7 @@ Requires: %{name}-%{?1:%{1}-}-modules-core-uname-r = %{KVERREL}%{uname_variant %
 Summary: %{variant_summary} unified kernel image for virtual machines\
 Provides: installonlypkg(kernel)\
 Provides: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): systemd >= 254-1\
@@ -1775,10 +1814,14 @@ Requires(pre): systemd >= 254-1\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
 Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}\
 Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-%{_target_cpu} = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: %{name}%{?1:-%{1}}-modules-partner = %{specrpmversion}-%{release}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner = %{specrpmversion}-%{specrelease_orig}%{uname_suffix %{?1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: %{name}%{?1:-%{1}}-modules-partner-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
+Provides: %{name}%{?1:-%{1}}-modules-partner-uname-r = %{KVERREL_ORIG}%{uname_suffix %{?1}}\
 Requires: %{name}-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{uname_suffix %{?1}}\
 Requires: %{name}%{?1:-%{1}}-modules-core-uname-r = %{KVERREL}%{uname_suffix %{?1}}\

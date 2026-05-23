@@ -1,0 +1,3 @@
+docker:
+  ghcr.io/hafriedlander:
+    use-sigstore-attachments: true

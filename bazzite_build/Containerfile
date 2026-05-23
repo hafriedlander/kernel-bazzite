@@ -4,6 +4,7 @@ FROM ghcr.io/ublue-os/bazzite-deck:stable-43
 COPY my-kernel-rpms/ /tmp/rpms/
 
 COPY bazzite_build/hafriedlander.pub /etc/pki/containers/hafriedlander.pub
+COPY bazzite_build/hafriedlander.yaml /etc/containers/registries.d/hafriedlander.yaml
 
 # Overwrite the Bazzite kernel with your patched version
 RUN set -e; \

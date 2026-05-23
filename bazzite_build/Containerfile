@@ -3,6 +3,8 @@ FROM ghcr.io/ublue-os/bazzite-deck:stable-43
 # The GitHub Action will download your kernel RPMs into this folder
 COPY my-kernel-rpms/ /tmp/rpms/
 
+COPY bazzite_build/hafriedlander.pub /etc/pki/containers/hafriedlander.pub
+
 # Overwrite the Bazzite kernel with your patched version
 RUN set -e; \
     INSTALL_LIST=""; \
@@ -19,3 +21,8 @@ RUN set -e; \
         rpm -Uvh --replacepkgs --replacefiles $INSTALL_LIST; \
     fi; \
     rm -rf /tmp/rpms
+
+# Add the key to the policy
+RUN jq '.transports.docker["ghcr.io/hafriedlander"] = [{"type": "sigstoreSigned", "keyPath": "/etc/pki/containers/hafriedlander.pub", "signedIdentity": {"type": "matchRepository"}}]' \
+    /etc/containers/policy.json > /tmp/policy.json && \
+    mv /tmp/policy.json /etc/containers/policy.json

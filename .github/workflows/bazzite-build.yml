@@ -55,6 +55,6 @@ jobs:
 
       - name: Sign image
         run: |
-          cosign sign --yes --key env://SIGNING_SECRET ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40@${{ steps.build-and-push.outputs.digest }}
+          cosign sign --yes --new-bundle-format=false --key env://SIGNING_SECRET ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40@${{ steps.build-and-push.outputs.digest }}
         env:
           SIGNING_SECRET: ${{secrets.SIGNING_SECRET}}

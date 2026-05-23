@@ -1,0 +1,21 @@
+FROM ghcr.io/ublue-os/bazzite-deck:stable-43
+
+# The GitHub Action will download your kernel RPMs into this folder
+COPY my-kernel-rpms/ /tmp/rpms/
+
+# Overwrite the Bazzite kernel with your patched version
+RUN set -e; \
+    INSTALL_LIST=""; \
+    for rpm_file in /tmp/rpms/*.rpm; do \
+        # Extract the exact package name (e.g., 'kernel-modules') from the file
+        PKG_NAME=$(rpm -qp --qf "%{NAME}" "$rpm_file" 2>/dev/null); \
+        # If that package is already installed in the image, add the file to our list
+        if rpm -q "$PKG_NAME" >/dev/null 2>&1; then \
+            INSTALL_LIST="$INSTALL_LIST $rpm_file"; \
+        fi; \
+    done; \
+    # Execute the override only on the filtered list
+    if [ -n "$INSTALL_LIST" ]; then \
+        rpm -Uvh --replacepkgs --replacefiles $INSTALL_LIST; \
+    fi; \
+    rm -rf /tmp/rpms

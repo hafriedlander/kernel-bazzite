@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Containerfile
+          file: ./bazzite_build/Containerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/bazzite-deck-patched:${{ github.ref_name }}

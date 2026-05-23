@@ -45,6 +45,16 @@ jobs:
           file: ./bazzite_build/Containerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/bazzite-deck-patched:${{ github.ref_name }}
+            ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40:${{ github.ref_name }}
             ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40:stable-43
             ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40:latest
+      
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.7.0
+
+      - name: Sign image
+        run: |
+          IMAGE_DIGEST="ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40@$(podman inspect --format='{{index .RepoDigests 0}}' ghcr.io/${{ github.repository_owner }}/bazzite-deck-cu40:${{ github.sha }} | cut -d'@' -f2)"
+          cosign sign --yes --key env://COSIGN_KEY "$IMAGE_DIGEST"
+        env:
+          SIGNING_SECRET: ${{secrets.SIGNING_SECRET}}

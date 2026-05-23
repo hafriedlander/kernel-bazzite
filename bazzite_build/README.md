@@ -9,7 +9,7 @@ broken modules (xpadpro, the fan control module, etc).
 
 # To install:
 
-````
+```
 sudo rpm-ostree rebase ostree-unverified-registry:ghcr.io/hafriedlander/bazzite-deck-cu40:latest
 ```
 
@@ -41,4 +41,4 @@ sudo rpm-ostree kargs --append=amdgpu.disable_cu=0.0.4,0.1.4,1.0.4,1.1.4
 
 # Can you make a Desktop version / Gnome version / help me get this working?
 
-Nope.
+Nope. This is just something I dumped on the internet.
